@@ -76,27 +76,29 @@ double simpsons(double a, double b, double n, double (*f)(double)){
 int main(int argc, char **argv){
 
   struct timespec start_q, end_q, start_t, end_t, start_s, end_s;
+  FILE *file1;
+  file1 = fopen("results.out", "a");
   double a = -2, b = 2;
   double size = (double) atoi( argv[1] );
   
   clock_gettime(CLOCK_MONOTONIC, &start_q);
   double integral_quadrates = quadrates(a,b,size, fun);
   clock_gettime(CLOCK_MONOTONIC, &end_q);
-  printf("quadrates   : %.32lf\n", integral_quadrates);
+  fprintf(file1,"quadrates   : %.32lf\n", integral_quadrates);
   
   clock_gettime(CLOCK_MONOTONIC, &start_t);
   double itegral_trapezoidal = trapezoidal(a,b, size, fun);
   clock_gettime(CLOCK_MONOTONIC, &end_t);
-  printf("trapezoidal : %.32lf\n", itegral_trapezoidal);
+  fprintf(file1,"trapezoidal : %.32lf\n", itegral_trapezoidal);
   
   clock_gettime(CLOCK_MONOTONIC, &start_s);
   double itegral_simpsons = simpsons(a,b, size, fun);
   clock_gettime(CLOCK_MONOTONIC, &end_s);
-  printf("simpsons    : %.32lf\n\n", itegral_simpsons);
+  fprintf(file1,"simpsons    : %.32lf\n\n", itegral_simpsons);
 
-  printf("Czas quadrates   : %.16f\n", timeDiff(&end_q, &start_q));
-  printf("Czas trapezoidal : %.16f\n", timeDiff(&end_t, &start_t));
-  printf("Czas simpsons    : %.16f\n", timeDiff(&end_s, &start_s));
-
+  fprintf(file1,"Czas quadrates   : %.16f\n", timeDiff(&end_q, &start_q));
+  fprintf(file1,"Czas trapezoidal : %.16f\n", timeDiff(&end_t, &start_t));
+  fprintf(file1,"Czas simpsons    : %.16f\n", timeDiff(&end_s, &start_s));
+  fclose(file1);
   return 0;
 }
