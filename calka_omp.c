@@ -36,10 +36,11 @@ double trapezoidal(double a, double b, double size, double (*f)(double)){
 
   double x = a;
   double wynik = 0;
+  int n = (int) size;
 
   int i;
-
-  for(i =0; i < size; i++){
+#pragma omp parallel for private(i), reduction(+:wynik)
+  for(i =0; i < n; i++){
     wynik += f(x + i*h) + f(x + (i+1)*h);
   }
 
@@ -48,13 +49,14 @@ double trapezoidal(double a, double b, double size, double (*f)(double)){
   return wynik;
 }
 
-double simpsons(double a, double b, double n, double (*f)(double)){
-  double h = (b-a) / (2*n);
+double simpsons(double a, double b, double size, double (*f)(double)){
+  double h = (b-a) / (2*size);
   double x = a;
   double wynik = 0;
+  int n = (int) size;
 
   int i;
-
+#pragma omp parallel for private(i), reduction(+:wynik)
   for(i = 0; i <= 2*n; i++){
     if(i ==0 || i==2*n){
       wynik += f( x + (i * h) );
